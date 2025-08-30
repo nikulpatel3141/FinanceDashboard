@@ -1,16 +1,11 @@
 package org.dashutils;
 
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.hc.client5.http.fluent.Request;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.util.HashMap;
-import java.util.zip.GZIPInputStream;
 
 
 class BinanceApiQuery {
@@ -26,28 +21,40 @@ class BinanceApiQuery {
         }
     }
 
-    static String queryEndpoint(Endpoints endpoint) throws IOException {
-        return Request.get(endpoint.url).execute().returnContent().asString();
+    static JsonNode queryEndpoint(Endpoints endpoint) throws IOException {
+        var rawJSONResponse = Request.get(endpoint.url).execute().returnContent().asString();
+        var objectMapper = new ObjectMapper();
+        return objectMapper.readTree(rawJSONResponse);
     }
 }
 
-
 public class BinanceDataRequest implements DataRequester {
     public HashMap<String, Double> getBorrowRates() {
-        String ratesResponse;
+        JsonNode ratesResponse;
         try {
             ratesResponse = BinanceApiQuery.queryEndpoint(BinanceApiQuery.Endpoints.BorrowRates);
         } catch (Exception e) {
             return new HashMap<>();
         }
 
-        System.out.println(ratesResponse);
-
-
-        return new HashMap<>();
+        var parsedRates = new HashMap<String, Double>();
+        var data = ratesResponse.get("data").elements();
+        data.forEachRemaining((node) -> {
+            var asset = node.get("assetName").asText();
+            var dailyBorrowRate = node.get("specs").elements().next().get("dailyInterestRate").asDouble();
+            parsedRates.put(asset, dailyBorrowRate * 365);
+        });
+        return parsedRates;
     }
 
     public OptionChain getOptionChain(String underlying){
+        JsonNode chainResponse;
+        try {
+            chainResponse = BinanceApiQuery.queryEndpoint(BinanceApiQuery.Endpoints.CoinInfo);
+        } catch (Exception e) {
+            return null;
+        }
+
         return null;
     }
 
@@ -61,7 +68,6 @@ public class BinanceDataRequest implements DataRequester {
 
     }
 }
-
 
 interface DataRequester {
     public HashMap<String, Double> getBorrowRates();

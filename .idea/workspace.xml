@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="11bd77b9-cdcb-4b3e-b722-3b5e758e0430" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/Option.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/Option.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/OptionChain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/OptionChain.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,15 +93,15 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>39</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>48</line>
-          <option name="timeStamp" value="6" />
+          <line>84</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="this" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

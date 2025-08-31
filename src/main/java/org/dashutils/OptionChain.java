@@ -1,4 +1,6 @@
 package org.dashutils;
 
-public record OptionChain(String underlying, Option[] optionSeries) {
+import java.util.List;
+
+public record OptionChain(String underlying, List<Option> optionSeries) {
 }

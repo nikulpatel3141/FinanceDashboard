@@ -7,8 +7,8 @@
     <list default="true" id="11bd77b9-cdcb-4b3e-b722-3b5e758e0430" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/Option.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/Option.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/OptionChain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/OptionChain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/MarketData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/OptionMarketData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/scripts/data_notebook.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/src/scripts/data_notebook.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,8 +93,13 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>84</line>
+          <line>102</line>
           <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
+          <line>29</line>
+          <option name="timeStamp" value="16" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

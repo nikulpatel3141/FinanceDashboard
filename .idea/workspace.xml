@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="11bd77b9-cdcb-4b3e-b722-3b5e758e0430" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/BlackScholesPricer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/BlackScholesPricer.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -37,6 +38,8 @@
     "Application.BinanceDataRequest.executor": "Debug",
     "Application.DataRequest.executor": "Run",
     "Application.Main.executor": "Debug",
+    "JUnit.BlackScholesPricerTest.executor": "Run",
+    "JUnit.BlackScholesPricerTest.testImpliedVolCall.executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
@@ -45,7 +48,7 @@
     "settings.editor.selected.configurable": "reference.settings.project.maven.archetype.catalogs"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="JUnit.BlackScholesPricerTest.testHigherPriceHigherVol">
     <configuration name="BinanceDataRequest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.dashutils.BinanceDataRequest" />
       <module name="FinanceDashboard" />
@@ -55,6 +58,69 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BlackScholesPricerTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="FinanceDashboard" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.dashutils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.dashutils" />
+      <option name="MAIN_CLASS_NAME" value="org.dashutils.BlackScholesPricerTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BlackScholesPricerTest.testHigherPriceHigherVol" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="FinanceDashboard" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.dashutils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.dashutils" />
+      <option name="MAIN_CLASS_NAME" value="org.dashutils.BlackScholesPricerTest" />
+      <option name="METHOD_NAME" value="testHigherPriceHigherVol" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BlackScholesPricerTest.testImpliedVolCall" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="FinanceDashboard" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.dashutils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.dashutils" />
+      <option name="MAIN_CLASS_NAME" value="org.dashutils.BlackScholesPricerTest" />
+      <option name="METHOD_NAME" value="testImpliedVolCall" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BlackScholesPricerTest.testImpliedVolPut" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="FinanceDashboard" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.dashutils.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.dashutils" />
+      <option name="MAIN_CLASS_NAME" value="org.dashutils.BlackScholesPricerTest" />
+      <option name="METHOD_NAME" value="testImpliedVolPut" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -72,6 +138,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.BlackScholesPricerTest.testHigherPriceHigherVol" />
+        <item itemvalue="JUnit.BlackScholesPricerTest.testImpliedVolPut" />
+        <item itemvalue="JUnit.BlackScholesPricerTest.testImpliedVolCall" />
+        <item itemvalue="JUnit.BlackScholesPricerTest" />
         <item itemvalue="Application.BinanceDataRequest" />
       </list>
     </recent_temporary>
@@ -98,6 +168,21 @@
           <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
           <line>29</line>
           <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/org/dashutils/BlackScholesPricerTest.java</url>
+          <line>20</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BlackScholesPricer.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BlackScholesPricer.java</url>
+          <line>14</line>
+          <option name="timeStamp" value="23" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -10,26 +10,26 @@ public class BlackScholesPricer implements OptionPricer {
     final static NormalDistribution normalDist = new NormalDistribution(0, 1);
 
     static double blackScholesPrice(Option option, Double spotPrice, Double riskFreeRate, Double dividendRate, Double volatility, Date currentDate){
-        double daysToExpiry = TimeUnit.DAYS.convert(option.expiry().getTime() - currentDate.getTime(), TimeUnit.MILLISECONDS);
+        double yearsToExpiry = TimeUnit.DAYS.convert(option.expiry().getTime() - currentDate.getTime(), TimeUnit.MILLISECONDS) / 365.0;
 
         var d1 = (
             Math.log(spotPrice / option.strike()) +
-            daysToExpiry * (riskFreeRate - dividendRate + 0.5 * Math.pow(volatility, 2.0))
-        ) / (volatility * Math.pow(daysToExpiry, 0.5));
-        var d2 = d1 - volatility * Math.pow(daysToExpiry, 0.5);
+            yearsToExpiry * (riskFreeRate - dividendRate + 0.5 * Math.pow(volatility, 2.0))
+        ) / (volatility * Math.pow(yearsToExpiry, 0.5));
+        var d2 = d1 - volatility * Math.pow(yearsToExpiry, 0.5);
 
-        var riskFreeDiscount = Math.exp(-riskFreeRate * daysToExpiry);
-        var dividendDiscount = Math.exp(-dividendRate * daysToExpiry);
+        var riskFreeDiscount = Math.exp(-riskFreeRate * yearsToExpiry);
+        var dividendDiscount = Math.exp(-dividendRate * yearsToExpiry);
 
         if (option.callPut() == CallPut.CALL){
             return (
-                spotPrice * riskFreeDiscount * normalDist.inverseCumulativeProbability(d1) -
-                option.strike() * dividendDiscount * normalDist.inverseCumulativeProbability(d2)
+                spotPrice * riskFreeDiscount * normalDist.cumulativeProbability(d1) -
+                option.strike() * dividendDiscount * normalDist.cumulativeProbability(d2)
             );
         }
         return (
-                option.strike() * dividendDiscount * normalDist.inverseCumulativeProbability(-d2) -
-                spotPrice * riskFreeDiscount * normalDist.inverseCumulativeProbability(-d1)
+                option.strike() * dividendDiscount * normalDist.cumulativeProbability(-d2) -
+                spotPrice * riskFreeDiscount * normalDist.cumulativeProbability(-d1)
         );
 
     }
@@ -52,9 +52,9 @@ public class BlackScholesPricer implements OptionPricer {
             var mid = lowerVolBound + (upperVolBound - lowerVolBound) / 2;
             var bsPrice = calcPrice.apply(mid);
             if (bsPrice > optionPrice){
-                lowerVolBound = mid;
-            } else {
                 upperVolBound = mid;
+            } else {
+                lowerVolBound = mid;
             }
         }
 

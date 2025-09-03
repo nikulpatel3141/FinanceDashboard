@@ -4,6 +4,7 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 public class BlackScholesPricer implements OptionPricer {
     final static NormalDistribution normalDist = new NormalDistribution(0, 1);
@@ -36,18 +37,28 @@ public class BlackScholesPricer implements OptionPricer {
     @Override
     public Double impliedVol(Option option, Double optionPrice, Double spotPrice, Double riskFreeRate, Double dividendRate, Date currentDate){
         var lowerVolBound = 1e-5;
-        var upperVolBound = 1;
+        var upperVolBound = 1.0;
 
-        var calcPrice = (Double volGuess) -> {
-            return blackScholesPrice(option, spotPrice, riskFreeRate, dividendRate, volGuess, currentDate);
-        };
+        Function<Double, Double> calcPrice = (Double volGuess) ->
+                blackScholesPrice(option, spotPrice, riskFreeRate, dividendRate, volGuess, currentDate);
 
-        while (calcPrice(upperVolBound) < optionPrice){
+        while (calcPrice.apply(upperVolBound) < optionPrice){
             lowerVolBound = upperVolBound;
             upperVolBound *= 2;
         }
 
-        return 0.0;
+        var tolerance = 1e-5;
+        while (upperVolBound - lowerVolBound > tolerance){
+            var mid = lowerVolBound + (upperVolBound - lowerVolBound) / 2;
+            var bsPrice = calcPrice.apply(mid);
+            if (bsPrice > optionPrice){
+                lowerVolBound = mid;
+            } else {
+                upperVolBound = mid;
+            }
+        }
+
+        return (upperVolBound + lowerVolBound) / 2;
     }
 }
 

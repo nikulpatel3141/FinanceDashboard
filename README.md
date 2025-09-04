@@ -2,6 +2,8 @@
 
 A Java application for visualizing cryptocurrency options volatility smiles. Displays implied volatility curves for crypto options with data from Binance or mock data for testing.
 
+![image](/img/img.png)
+
 ## Features
 
 - Volatility smile charts for BTC, ETH, SOL, ADA, DOT options

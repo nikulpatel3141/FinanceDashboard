@@ -132,12 +132,3 @@ public class BinanceDataRequest implements DataRequester {
     }
 }
 
-interface DataRequester {
-    public HashMap<String, Double> getBorrowRates();
-
-    public HashMap<String, OptionChain> getOptionChain();
-
-    public HashMap<String, OptionMarketData> getOptionMarketData();
-
-    public Double getSpotMarketPrice(String ticker);
-}

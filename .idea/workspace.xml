@@ -7,8 +7,7 @@
     <list default="true" id="11bd77b9-cdcb-4b3e-b722-3b5e758e0430" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/dashui/VolatilitySmileUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashui/VolatilitySmileUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/CachedDataRequester.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/CachedDataRequester.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/MockDataProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/MockDataProvider.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -155,16 +154,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>104</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>29</line>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BlackScholesPricer.java</url>
           <line>49</line>
           <option name="timeStamp" value="22" />
@@ -176,11 +165,6 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>97</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
           <line>74</line>
           <option name="timeStamp" value="27" />
         </line-breakpoint>
@@ -188,19 +172,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/CachedDataRequester.java</url>
           <line>18</line>
           <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>102</line>
-          <properties>
-            <option name="lambda-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="35" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>56</line>
-          <option name="timeStamp" value="37" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

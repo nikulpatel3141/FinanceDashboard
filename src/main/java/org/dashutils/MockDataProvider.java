@@ -4,6 +4,7 @@ import java.util.*;
 
 public class MockDataProvider implements DataRequester {
     private static final String[] CRYPTO_COINS = {"BTC", "ETH", "SOL", "ADA", "DOT"};
+    private static final String[] CRYPTO_COINS_USDT = {"BTCUSDT", "ETHUSDT", "SOLUSDT", "ADAUSDT", "DOTUSDT"};
     private static final double[] SPOT_PRICES = {50000.0, 3500.0, 100.0, 0.5, 8.0};
     
     @Override
@@ -21,9 +22,9 @@ public class MockDataProvider implements DataRequester {
     public HashMap<String, OptionChain> getOptionChain() {
         var chains = new HashMap<String, OptionChain>();
         
-        for (String coin : CRYPTO_COINS) {
+        for (String coinUsdt : CRYPTO_COINS_USDT) {
             var options = new ArrayList<Option>();
-            double spotPrice = getSpotPrice(coin);
+            double spotPrice = getSpotPrice(coinUsdt);
             
             // Create options with different strikes and expirations
             double[] strikeMultipliers = {0.8, 0.9, 1.0, 1.1, 1.2};
@@ -34,12 +35,12 @@ public class MockDataProvider implements DataRequester {
                     double strike = spotPrice * mult;
                     Date expiry = new Date(System.currentTimeMillis() + days * 24 * 60 * 60 * 1000L);
                     
-                    options.add(new Option(coin + "-C-" + (int)strike, coin, strike, expiry, CallPut.CALL));
-                    options.add(new Option(coin + "-P-" + (int)strike, coin, strike, expiry, CallPut.PUT));
+                    options.add(new Option(coinUsdt + "-C-" + (int)strike + "-" + days + "d", coinUsdt, strike, expiry, CallPut.CALL));
+                    options.add(new Option(coinUsdt + "-P-" + (int)strike + "-" + days + "d", coinUsdt, strike, expiry, CallPut.PUT));
                 }
             }
             
-            chains.put(coin, new OptionChain(coin, options));
+            chains.put(coinUsdt, new OptionChain(coinUsdt, options));
         }
         
         return chains;
@@ -76,8 +77,11 @@ public class MockDataProvider implements DataRequester {
     }
     
     private double getSpotPrice(String coin) {
+        // Handle both BTC and BTCUSDT formats
+        String baseCoin = coin.replace("USDT", "");
+        
         for (int i = 0; i < CRYPTO_COINS.length; i++) {
-            if (CRYPTO_COINS[i].equals(coin)) {
+            if (CRYPTO_COINS[i].equals(baseCoin) || CRYPTO_COINS_USDT[i].equals(coin)) {
                 return SPOT_PRICES[i];
             }
         }

@@ -6,8 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="11bd77b9-cdcb-4b3e-b722-3b5e758e0430" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/dashui/VolatilitySmileUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashui/VolatilitySmileUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/dashutils/CachedDataRequester.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/dashutils/CachedDataRequester.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,13 +39,15 @@
     &quot;Application.BinanceDataRequest.executor&quot;: &quot;Debug&quot;,
     &quot;Application.DataRequest.executor&quot;: &quot;Run&quot;,
     &quot;Application.Main.executor&quot;: &quot;Debug&quot;,
-    &quot;Application.VolatilitySmileUI.executor&quot;: &quot;Run&quot;,
+    &quot;Application.VolatilitySmileUI.executor&quot;: &quot;Debug&quot;,
     &quot;JUnit.BlackScholesPricerTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.BlackScholesPricerTest.testHigherPriceHigherVol.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.BlackScholesPricerTest.testImpliedVolCall.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.BlackScholesPricerTest.testImpliedVolPut.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
@@ -153,7 +156,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>102</line>
+          <line>104</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -173,18 +176,31 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>95</line>
+          <line>97</line>
           <option name="timeStamp" value="26" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>72</line>
+          <line>74</line>
           <option name="timeStamp" value="27" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/CachedDataRequester.java</url>
+          <line>18</line>
+          <option name="timeStamp" value="33" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
-          <line>122</line>
-          <option name="timeStamp" value="28" />
+          <line>102</line>
+          <properties>
+            <option name="lambda-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/org/dashutils/BinanceDataRequest.java</url>
+          <line>56</line>
+          <option name="timeStamp" value="37" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

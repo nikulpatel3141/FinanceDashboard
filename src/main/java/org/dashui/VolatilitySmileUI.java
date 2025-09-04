@@ -10,12 +10,17 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
 public class VolatilitySmileUI extends JFrame {
     private CachedDataRequester dataProvider;
     private JComboBox<String> coinSelector;
     private JComboBox<String> dataSourceSelector;
     private ChartPanel chartPanel;
+    private JButton refreshButton;
+    private JLabel statusLabel;
     
     public VolatilitySmileUI() {
         this.dataProvider = new CachedDataRequester(new MockDataProvider());
@@ -43,6 +48,8 @@ public class VolatilitySmileUI extends JFrame {
         // Coin selector
         topPanel.add(new JLabel("Select Crypto:"));
         String[] coins = {"BTC", "ETH", "SOL", "ADA", "DOT"};
+        for (var i = 0; i < coins.length; ++i) coins[i] += "USDT";
+
         coinSelector = new JComboBox<>(coins);
         coinSelector.addActionListener(e -> updateChart());
         topPanel.add(coinSelector);
@@ -50,9 +57,13 @@ public class VolatilitySmileUI extends JFrame {
         topPanel.add(new JSeparator(SwingConstants.VERTICAL));
         
         // Refresh button
-        JButton refreshButton = new JButton("Refresh Data");
+        refreshButton = new JButton("Refresh Data");
         refreshButton.addActionListener(e -> refreshData());
         topPanel.add(refreshButton);
+        
+        // Status label
+        statusLabel = new JLabel("Ready");
+        topPanel.add(statusLabel);
         
         add(topPanel, BorderLayout.NORTH);
         
@@ -66,23 +77,48 @@ public class VolatilitySmileUI extends JFrame {
         String selectedCoin = (String) coinSelector.getSelectedItem();
         if (selectedCoin == null) return;
         
-        var optionChains = dataProvider.getOptionChain();
-        var marketData = dataProvider.getOptionMarketData();
-        Double spotPrice = dataProvider.getSpotMarketPrice(selectedCoin);
+        setLoadingState(true, "Loading chart data...");
         
+        SwingWorker<ChartData, Void> worker = new SwingWorker<ChartData, Void>() {
+            @Override
+            protected ChartData doInBackground() throws Exception {
+                var optionChains = dataProvider.getOptionChain();
+                var marketData = dataProvider.getOptionMarketData();
+                Double spotPrice = dataProvider.getSpotMarketPrice(selectedCoin);
+                
+                return new ChartData(optionChains, marketData, spotPrice);
+            }
+            
+            @Override
+            protected void done() {
+                try {
+                    ChartData data = get();
+                    createChart(selectedCoin, data);
+                    setLoadingState(false, "Ready");
+                } catch (InterruptedException | ExecutionException e) {
+                    setLoadingState(false, "Error loading data");
+                    e.printStackTrace();
+                }
+            }
+        };
+        
+        worker.execute();
+    }
+    
+    private void createChart(String selectedCoin, ChartData data) {
         XYSeries series = new XYSeries("Implied Volatility");
         
-        if (optionChains.containsKey(selectedCoin)) {
-            OptionChain chain = optionChains.get(selectedCoin);
+        if (data.optionChains.containsKey(selectedCoin)) {
+            OptionChain chain = data.optionChains.get(selectedCoin);
             
             // Filter for calls only and sort by strike
             chain.optionSeries().stream()
                     .filter(option -> option.callPut() == CallPut.CALL)
                     .sorted((a, b) -> Double.compare(a.strike(), b.strike()))
                     .forEach(option -> {
-                        OptionMarketData data = marketData.get(option.symbol());
-                        if (data != null) {
-                            series.add(option.strike(), data.impliedVol() * 100); // Convert to percentage
+                        OptionMarketData marketData = data.marketData.get(option.symbol());
+                        if (marketData != null) {
+                            series.add(option.strike(), marketData.impliedVol() * 100); // Convert to percentage
                         }
                     });
         }
@@ -90,7 +126,7 @@ public class VolatilitySmileUI extends JFrame {
         XYSeriesCollection dataset = new XYSeriesCollection(series);
         
         JFreeChart chart = ChartFactory.createXYLineChart(
-                selectedCoin + " Volatility Smile (Spot: $" + String.format("%.2f", spotPrice) + ")",
+                selectedCoin + " Volatility Smile (Spot: $" + String.format("%.2f", data.spotPrice) + ")",
                 "Strike Price",
                 "Implied Volatility (%)",
                 dataset,
@@ -110,23 +146,86 @@ public class VolatilitySmileUI extends JFrame {
         repaint();
     }
     
+    private static class ChartData {
+        final HashMap<String, OptionChain> optionChains;
+        final HashMap<String, OptionMarketData> marketData;
+        final Double spotPrice;
+        
+        ChartData(HashMap<String, OptionChain> optionChains, 
+                 HashMap<String, OptionMarketData> marketData, 
+                 Double spotPrice) {
+            this.optionChains = optionChains;
+            this.marketData = marketData;
+            this.spotPrice = spotPrice;
+        }
+    }
+    
     private void switchDataSource() {
         String selected = (String) dataSourceSelector.getSelectedItem();
-        DataRequester newProvider;
         
-        if ("Binance API".equals(selected)) {
-            newProvider = new BinanceDataRequest();
-        } else {
-            newProvider = new MockDataProvider();
-        }
+        setLoadingState(true, "Switching data source...");
         
-        this.dataProvider = new CachedDataRequester(newProvider);
-        updateChart();
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                DataRequester newProvider;
+                
+                if ("Binance API".equals(selected)) {
+                    newProvider = new BinanceDataRequest();
+                } else {
+                    newProvider = new MockDataProvider();
+                }
+                
+                dataProvider = new CachedDataRequester(newProvider);
+                return null;
+            }
+            
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    setLoadingState(false, "Ready");
+                    updateChart();
+                } catch (InterruptedException | ExecutionException e) {
+                    setLoadingState(false, "Error switching data source");
+                    e.printStackTrace();
+                }
+            }
+        };
+        
+        worker.execute();
     }
     
     private void refreshData() {
-        dataProvider.clearCaches();
-        updateChart();
+        setLoadingState(true, "Refreshing data...");
+        
+        SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                dataProvider.clearCaches();
+                return null;
+            }
+            
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    updateChart();
+                } catch (InterruptedException | ExecutionException e) {
+                    setLoadingState(false, "Error refreshing data");
+                    e.printStackTrace();
+                }
+            }
+        };
+        
+        worker.execute();
+    }
+    
+    private void setLoadingState(boolean loading, String message) {
+        statusLabel.setText(message);
+        coinSelector.setEnabled(!loading);
+        dataSourceSelector.setEnabled(!loading);
+        refreshButton.setEnabled(!loading);
     }
     
     public static void main(String[] args) {

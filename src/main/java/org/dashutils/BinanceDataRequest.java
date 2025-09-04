@@ -28,6 +28,8 @@ class BinanceApiQuery {
 
     static JsonNode queryEndpoint(Endpoints endpoint, Map<String, String> queryParams) throws IOException {
         URI uri;
+        if (queryParams == null) queryParams = new HashMap<>();
+
         try {
             final URIBuilder[] uriBuilder = {new URIBuilder(endpoint.url)};
             queryParams.forEach((k, v) -> {

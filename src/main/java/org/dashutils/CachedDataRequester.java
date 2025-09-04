@@ -7,7 +7,7 @@ public class CachedDataRequester implements DataRequester {
     private HashMap<String, Double> borrowRatesCache;
     private HashMap<String, OptionChain> optionChainCache;
     private HashMap<String, OptionMarketData> marketDataCache;
-    private HashMap<String, Double> spotPriceCache;
+    final private HashMap<String, Double> spotPriceCache;
     
     public CachedDataRequester(DataRequester delegate) {
         this.delegate = delegate;

@@ -9,7 +9,10 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -24,7 +27,11 @@ public class VolatilitySmileUI extends JFrame {
     private ChartPanel chartPanel;
     private JButton refreshButton;
     private JLabel statusLabel;
+    private JTable interestRatesTable;
+    private JTable optionPricesTable;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private DecimalFormat percentFormat = new DecimalFormat("#,##0.00");
+    private DecimalFormat priceFormat = new DecimalFormat("#,##0.00");
     
     public VolatilitySmileUI() {
         this.dataProvider = new CachedDataRequester(new MockDataProvider());
@@ -34,7 +41,7 @@ public class VolatilitySmileUI extends JFrame {
     private void initializeUI() {
         setTitle("Crypto Options Volatility Smile");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setSize(1200, 800);
         setLayout(new BorderLayout());
         
         // Top panel with controls
@@ -56,6 +63,7 @@ public class VolatilitySmileUI extends JFrame {
 
         coinSelector = new JComboBox<>(coins);
         coinSelector.addActionListener(e -> {
+            updateInterestRatesTable();
             updateExpirySelector();
             updateChart();
         });
@@ -82,11 +90,94 @@ public class VolatilitySmileUI extends JFrame {
         
         add(topPanel, BorderLayout.NORTH);
         
+        // Initialize tables
+        initializeTables();
+        
         // Create initial chart
         updateExpirySelector();
         updateChart();
         
         setLocationRelativeTo(null);
+    }
+    
+    private void initializeTables() {
+        // Create a panel to hold both tables on the left side
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setPreferredSize(new Dimension(375, 0)); // 50% wider than 250
+        
+        // Interest rates table
+        String[] rateColumns = {"Asset", "Lending Rate (%)"};
+        DefaultTableModel rateModel = new DefaultTableModel(rateColumns, 0);
+        interestRatesTable = new JTable(rateModel);
+        
+        // Right-align the lending rate column
+        DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+        interestRatesTable.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+        
+        JScrollPane rateScrollPane = new JScrollPane(interestRatesTable);
+        rateScrollPane.setPreferredSize(new Dimension(375, 100));
+        rateScrollPane.setBorder(BorderFactory.createTitledBorder("Lending Rates"));
+        leftPanel.add(rateScrollPane);
+        
+        // Option prices table
+        String[] priceColumns = {"Strike", "Call Price", "Put Price", "Implied Vol (%)"};
+        DefaultTableModel priceModel = new DefaultTableModel(priceColumns, 0);
+        optionPricesTable = new JTable(priceModel);
+        
+        // Right-align numeric columns
+        for (int i = 0; i < priceColumns.length; i++) {
+            optionPricesTable.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
+        }
+        
+        JScrollPane priceScrollPane = new JScrollPane(optionPricesTable);
+        priceScrollPane.setBorder(BorderFactory.createTitledBorder("Option Prices"));
+        leftPanel.add(priceScrollPane);
+        
+        add(leftPanel, BorderLayout.WEST);
+        
+        updateInterestRatesTable();
+    }
+    
+    private void updateInterestRatesTable() {
+        SwingWorker<HashMap<String, Double>, Void> worker = new SwingWorker<HashMap<String, Double>, Void>() {
+            @Override
+            protected HashMap<String, Double> doInBackground() throws Exception {
+                return dataProvider.getBorrowRates();
+            }
+            
+            @Override
+            protected void done() {
+                try {
+                    HashMap<String, Double> rates = get();
+                    DefaultTableModel model = (DefaultTableModel) interestRatesTable.getModel();
+                    model.setRowCount(0);
+                    
+                    String selectedCoin = (String) coinSelector.getSelectedItem();
+                    if (selectedCoin != null) {
+                        // Show rate for selected crypto
+                        String baseCrypto = selectedCoin.replace("USDT", "");
+                        if (rates.containsKey(baseCrypto)) {
+                            double rate = rates.get(baseCrypto) * 100; // Convert to percentage
+                            model.addRow(new Object[]{baseCrypto, percentFormat.format(rate)});
+                        }
+                        
+                        // Always show USDT rate
+                        if (rates.containsKey("USDT")) {
+                            double usdtRate = rates.get("USDT") * 100;
+                            model.addRow(new Object[]{"USDT", percentFormat.format(usdtRate)});
+                        } else {
+                            // If USDT rate not available, show 0% as placeholder
+                            model.addRow(new Object[]{"USDT", percentFormat.format(0.0)});
+                        }
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        worker.execute();
     }
     
     private void updateExpirySelector() {
@@ -161,6 +252,7 @@ public class VolatilitySmileUI extends JFrame {
                 try {
                     ChartData data = get();
                     createChart(selectedCoin, selectedExpiry, data);
+                    updateOptionPricesTable(selectedCoin, selectedExpiry, data);
                     setLoadingState(false, "Ready");
                 } catch (InterruptedException | ExecutionException e) {
                     setLoadingState(false, "Error loading data");
@@ -225,6 +317,71 @@ public class VolatilitySmileUI extends JFrame {
         repaint();
     }
     
+    private void updateOptionPricesTable(String selectedCoin, String selectedExpiry, ChartData data) {
+        DefaultTableModel model = (DefaultTableModel) optionPricesTable.getModel();
+        model.setRowCount(0);
+        
+        if (!data.optionChains.containsKey(selectedCoin)) return;
+        
+        OptionChain chain = data.optionChains.get(selectedCoin);
+        
+        // Parse the selected expiry date
+        Date targetExpiry = null;
+        try {
+            targetExpiry = dateFormat.parse(selectedExpiry);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        
+        // Group options by strike price for the selected expiry
+        Map<Double, List<Option>> optionsByStrike = chain.optionSeries().stream()
+                .filter(option -> dateFormat.format(option.expiry()).equals(selectedExpiry))
+                .collect(Collectors.groupingBy(Option::strike));
+        
+        // Sort by strike and populate table
+        optionsByStrike.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .forEach(entry -> {
+                    double strike = entry.getKey();
+                    List<Option> options = entry.getValue();
+                    
+                    Option callOption = options.stream()
+                            .filter(opt -> opt.callPut() == CallPut.CALL)
+                            .findFirst().orElse(null);
+                    
+                    Option putOption = options.stream()
+                            .filter(opt -> opt.callPut() == CallPut.PUT)
+                            .findFirst().orElse(null);
+                    
+                    String callPrice = "N/A";
+                    String putPrice = "N/A";
+                    String impliedVol = "N/A";
+                    
+                    if (callOption != null) {
+                        OptionMarketData callData = data.marketData.get(callOption.symbol());
+                        if (callData != null) {
+                            callPrice = "$" + priceFormat.format(callData.price());
+                            impliedVol = percentFormat.format(callData.impliedVol() * 100);
+                        }
+                    }
+                    
+                    if (putOption != null) {
+                        OptionMarketData putData = data.marketData.get(putOption.symbol());
+                        if (putData != null) {
+                            putPrice = "$" + priceFormat.format(putData.price());
+                        }
+                    }
+                    
+                    model.addRow(new Object[]{
+                        "$" + priceFormat.format(strike),
+                        callPrice,
+                        putPrice,
+                        impliedVol
+                    });
+                });
+    }
+    
     private static class ChartData {
         final HashMap<String, OptionChain> optionChains;
         final HashMap<String, OptionMarketData> marketData;
@@ -264,6 +421,7 @@ public class VolatilitySmileUI extends JFrame {
                 try {
                     get();
                     setLoadingState(false, "Ready");
+                    updateInterestRatesTable();
                     updateExpirySelector();
                     updateChart();
                 } catch (InterruptedException | ExecutionException e) {
@@ -290,6 +448,7 @@ public class VolatilitySmileUI extends JFrame {
             protected void done() {
                 try {
                     get();
+                    updateInterestRatesTable();
                     updateChart();
                 } catch (InterruptedException | ExecutionException e) {
                     setLoadingState(false, "Error refreshing data");

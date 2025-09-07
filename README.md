@@ -1,6 +1,6 @@
 # OptionDash
 
-[![Code Linting](https://github.com/npatel/OptionDash/actions/workflows/lint.yml/badge.svg)](https://github.com/nikulpatel3141/FinanceDashboard/actions/workflows/lint.yml)
+[![Code Linting](https://github.com/nikulpatel3141/FinanceDashboard/actions/workflows/lint.yml/badge.svg)](https://github.com/nikulpatel3141/FinanceDashboard/actions/workflows/lint.yml)
 
 A Java application for visualizing cryptocurrency options volatility smiles. Displays implied volatility curves for crypto options with data from Binance or mock data for testing.
 
